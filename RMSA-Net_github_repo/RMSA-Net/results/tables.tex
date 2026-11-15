@@ -1,0 +1,189 @@
+% Table 2
+\begin{tabular}{ll}
+\hline
+Input dims (text, audio, vision) & 768, 5, 20 \\
+BiLSTM hidden H (text: per direction; audio/vision: H/2 per direction) & 128 \\
+BiLSTM layers (text / audio / vision) & 2 / 1 / 1 \\
+Projection dim D & 64 \\
+CMTA attention dim / heads & 128 / 1 \\
+PSG gate and polarity MLP hidden & 128 \\
+MMR surrogate generator & 64 → 128 → 64 \\
+Fusion MLP & 192 → 128 → 32 \\
+Dropout (text LSTM, fusion) & 0.3 \\
+Modality dropout (training) & per condition, = test rate (Table 3); 0 for clean \\
+Optimizer / LR / weight decay & AdamW / 1e-3 / 1e-4 \\
+LR schedule & cosine annealing, η_min = 0, T_max = epochs \\
+Epochs / batch size / grad clip & 30 / 32 / 1.0 \\
+Loss weights λ1 (BCE) / λ2 (unimodal) / λ3 (MMR-rec) & 0.5 / 0.1 / 0 (0.1 for MMR-rec) \\
+Model selection & lowest validation MAE under the training condition \\
+Seeds & 7, 13, 17, 42, 99 \\
+Feature standardisation & audio/vision z-scored with training statistics \\
+Trainable parameters (full model) & 1.98 M \\
+\hline
+\end{tabular}
+
+
+% Table 3 — RMSA-Net on CMU-MOSI (training and test missingness matched)
+\begin{tabular}{lcccccccc}
+\hline
+Condition & MAE$\downarrow$ & Corr$\uparrow$ & Acc-7$\uparrow$ & Acc-2$\uparrow$ & F1$\uparrow$ & Acc-2 (non-0)$\uparrow$ & F1 (non-0)$\uparrow$ & n seeds \\
+\hline
+All modalities (clean) & 0.926 $\pm$ 0.009 & 0.671 $\pm$ 0.011 & 35.42 $\pm$ 1.10 & 77.14 $\pm$ 0.81 & 77.17 $\pm$ 0.79 & 78.29 $\pm$ 0.83 & 78.39 $\pm$ 0.81 & 5 \\
+Unaligned (CMTA) & 0.914 $\pm$ 0.014 & 0.680 $\pm$ 0.007 & 36.33 $\pm$ 2.27 & 77.08 $\pm$ 0.85 & 77.11 $\pm$ 0.85 & 78.45 $\pm$ 0.70 & 78.54 $\pm$ 0.70 & 5 \\
+Audio 30% + MMR & 0.930 $\pm$ 0.019 & 0.669 $\pm$ 0.008 & 34.78 $\pm$ 1.48 & 77.61 $\pm$ 1.17 & 77.65 $\pm$ 1.15 & 78.66 $\pm$ 1.25 & 78.76 $\pm$ 1.22 & 5 \\
+Vision 30% + MMR & 0.944 $\pm$ 0.034 & 0.670 $\pm$ 0.013 & 35.07 $\pm$ 0.61 & 77.00 $\pm$ 1.55 & 77.04 $\pm$ 1.56 & 77.87 $\pm$ 1.85 & 77.98 $\pm$ 1.84 & 5 \\
+A+V 30% + MMR & 0.955 $\pm$ 0.036 & 0.664 $\pm$ 0.015 & 34.99 $\pm$ 0.91 & 76.06 $\pm$ 1.33 & 76.10 $\pm$ 1.32 & 76.95 $\pm$ 1.71 & 77.07 $\pm$ 1.70 & 5 \\
+A+V 50% + MMR & 0.928 $\pm$ 0.019 & 0.677 $\pm$ 0.010 & 36.36 $\pm$ 1.86 & 77.11 $\pm$ 0.52 & 77.14 $\pm$ 0.53 & 78.08 $\pm$ 0.58 & 78.18 $\pm$ 0.58 & 5 \\
+Audio 30%, zero-fill & 0.932 $\pm$ 0.013 & 0.677 $\pm$ 0.012 & 34.58 $\pm$ 0.80 & 77.29 $\pm$ 1.35 & 77.33 $\pm$ 1.33 & 78.23 $\pm$ 1.53 & 78.34 $\pm$ 1.51 & 5 \\
+Vision 30%, zero-fill & 0.933 $\pm$ 0.012 & 0.672 $\pm$ 0.007 & 35.25 $\pm$ 1.69 & 76.94 $\pm$ 0.97 & 76.98 $\pm$ 0.93 & 77.90 $\pm$ 1.29 & 78.01 $\pm$ 1.24 & 5 \\
+A+V 30%, zero-fill & 0.937 $\pm$ 0.011 & 0.667 $\pm$ 0.012 & 35.89 $\pm$ 1.48 & 76.79 $\pm$ 1.15 & 76.83 $\pm$ 1.14 & 77.96 $\pm$ 1.31 & 78.07 $\pm$ 1.29 & 5 \\
+A+V 50%, zero-fill & 0.946 $\pm$ 0.026 & 0.660 $\pm$ 0.005 & 35.48 $\pm$ 2.27 & 76.44 $\pm$ 0.90 & 76.47 $\pm$ 0.91 & 77.32 $\pm$ 1.26 & 77.42 $\pm$ 1.25 & 5 \\
+\hline
+\end{tabular}
+
+
+% Table 3 upper block (published)
+TFN [27] & 0.901 & 0.698 & 34.9 & 73.9 & 73.4 \\
+LMF [28] & 0.917 & 0.695 & 33.2 & 82.5 & 82.4 \\
+ICCN [29] & 0.862 & 0.714 & 39.0 & 83.0 & 83.0 \\
+MulT [6] & 0.861 & 0.711 & — & 84.1 & 83.9 \\
+MISA [7] & 0.804 & 0.764 & — & 82.1 & 82.0 \\
+Self-MM [9] & 0.713 & 0.798 & — & 85.98 & 85.95 \\
+MMIM [8] & 0.700 & 0.800 & 46.65 & 86.06 & 85.98 \\
+JTUM [30] & 0.721 & 0.798 & 44.90 & 86.28 & 86.19 \\
+DPM [32] & 0.668 & 0.835 & 45.34 & 87.65 & 87.61 \\
+
+
+% Table 3b — Baselines re-trained with identical features, seeds and degradation protocols
+\begin{tabular}{lcccccc}
+\hline
+Condition & MAE$\downarrow$ & Corr$\uparrow$ & Acc-7$\uparrow$ & Acc-2$\uparrow$ & F1$\uparrow$ & n seeds \\
+\hline
+LF-LSTM — clean & 0.956 $\pm$ 0.024 & 0.665 $\pm$ 0.007 & 34.69 $\pm$ 1.64 & 76.68 $\pm$ 1.22 & 76.72 $\pm$ 1.20 & 5 \\
+LF-LSTM — A+V 30% & 0.957 $\pm$ 0.017 & 0.662 $\pm$ 0.010 & 34.26 $\pm$ 1.42 & 76.85 $\pm$ 0.96 & 76.89 $\pm$ 0.96 & 5 \\
+LF-LSTM — A+V 50% & 0.955 $\pm$ 0.011 & 0.658 $\pm$ 0.012 & 33.88 $\pm$ 1.08 & 76.88 $\pm$ 0.57 & 76.91 $\pm$ 0.57 & 5 \\
+TFN — clean & 1.003 $\pm$ 0.016 & 0.641 $\pm$ 0.014 & 31.69 $\pm$ 0.82 & 74.81 $\pm$ 1.12 & 74.87 $\pm$ 1.11 & 5 \\
+TFN — A+V 30% & 0.969 $\pm$ 0.008 & 0.645 $\pm$ 0.009 & 34.17 $\pm$ 1.00 & 75.77 $\pm$ 0.63 & 75.79 $\pm$ 0.63 & 5 \\
+TFN — A+V 50% & 0.975 $\pm$ 0.010 & 0.645 $\pm$ 0.012 & 34.14 $\pm$ 1.51 & 75.57 $\pm$ 0.44 & 75.61 $\pm$ 0.44 & 5 \\
+MulT (re-impl.) — clean & 0.949 $\pm$ 0.025 & 0.675 $\pm$ 0.017 & 34.75 $\pm$ 1.64 & 76.41 $\pm$ 0.99 & 76.47 $\pm$ 0.97 & 5 \\
+MulT (re-impl.) — A+V 30% & 0.953 $\pm$ 0.011 & 0.677 $\pm$ 0.027 & 34.23 $\pm$ 1.69 & 77.08 $\pm$ 0.60 & 77.11 $\pm$ 0.58 & 5 \\
+MulT (re-impl.) — A+V 50% & 0.956 $\pm$ 0.042 & 0.672 $\pm$ 0.018 & 34.14 $\pm$ 1.82 & 77.03 $\pm$ 1.63 & 77.03 $\pm$ 1.59 & 5 \\
+MulT (re-impl.) — unaligned & 0.954 $\pm$ 0.022 & 0.666 $\pm$ 0.016 & 34.34 $\pm$ 0.38 & 76.53 $\pm$ 0.71 & 76.56 $\pm$ 0.73 & 5 \\
+MulT (re-impl.) — unaligned + A+V 30% & 0.952 $\pm$ 0.010 & 0.661 $\pm$ 0.020 & 35.83 $\pm$ 0.99 & 76.53 $\pm$ 1.28 & 76.56 $\pm$ 1.26 & 5 \\
+RMSA-Net zero-fill — clean & 0.918 $\pm$ 0.023 & 0.677 $\pm$ 0.012 & 34.69 $\pm$ 1.32 & 78.08 $\pm$ 0.62 & 78.09 $\pm$ 0.58 & 5 \\
+RMSA-Net MMR — clean & 0.926 $\pm$ 0.009 & 0.671 $\pm$ 0.011 & 35.42 $\pm$ 1.10 & 77.14 $\pm$ 0.81 & 77.17 $\pm$ 0.79 & 5 \\
+RMSA-Net zero-fill — A+V 30% & 0.937 $\pm$ 0.011 & 0.667 $\pm$ 0.012 & 35.89 $\pm$ 1.48 & 76.79 $\pm$ 1.15 & 76.83 $\pm$ 1.14 & 5 \\
+RMSA-Net MMR — A+V 30% & 0.955 $\pm$ 0.036 & 0.664 $\pm$ 0.015 & 34.99 $\pm$ 0.91 & 76.06 $\pm$ 1.33 & 76.10 $\pm$ 1.32 & 5 \\
+RMSA-Net zero-fill — A+V 50% & 0.946 $\pm$ 0.026 & 0.660 $\pm$ 0.005 & 35.48 $\pm$ 2.27 & 76.44 $\pm$ 0.90 & 76.47 $\pm$ 0.91 & 5 \\
+RMSA-Net MMR — A+V 50% & 0.928 $\pm$ 0.019 & 0.677 $\pm$ 0.010 & 36.36 $\pm$ 1.86 & 77.11 $\pm$ 0.52 & 77.14 $\pm$ 0.53 & 5 \\
+RMSA-Net — unaligned & 0.914 $\pm$ 0.014 & 0.680 $\pm$ 0.007 & 36.33 $\pm$ 2.27 & 77.08 $\pm$ 0.85 & 77.11 $\pm$ 0.85 & 5 \\
+RMSA-Net — unaligned + A+V 30% & 0.941 $\pm$ 0.007 & 0.668 $\pm$ 0.005 & 36.18 $\pm$ 1.20 & 76.85 $\pm$ 0.84 & 76.91 $\pm$ 0.83 & 5 \\
+\hline
+\end{tabular}
+
+
+% Table 4 — Factorial ablation, CMU-MOSI, A+V 30% (train and test)
+\begin{tabular}{lcccccc}
+\hline
+Condition & MAE$\downarrow$ & Corr$\uparrow$ & Acc-7$\uparrow$ & Acc-2$\uparrow$ & F1$\uparrow$ & n seeds \\
+\hline
+Base BiLSTM & 0.934 $\pm$ 0.017 & 0.662 $\pm$ 0.004 & 35.60 $\pm$ 1.33 & 77.52 $\pm$ 0.54 & 77.54 $\pm$ 0.57 & 5 \\
+CMTA & 0.934 $\pm$ 0.009 & 0.665 $\pm$ 0.007 & 35.60 $\pm$ 0.48 & 76.76 $\pm$ 0.66 & 76.77 $\pm$ 0.67 & 5 \\
+MMR & 0.942 $\pm$ 0.026 & 0.669 $\pm$ 0.007 & 34.66 $\pm$ 1.21 & 76.65 $\pm$ 0.85 & 76.70 $\pm$ 0.83 & 5 \\
+PSG & 0.918 $\pm$ 0.013 & 0.674 $\pm$ 0.009 & 35.83 $\pm$ 0.85 & 77.20 $\pm$ 0.91 & 77.23 $\pm$ 0.89 & 5 \\
+CMTA + MMR & 0.936 $\pm$ 0.017 & 0.673 $\pm$ 0.007 & 34.58 $\pm$ 1.53 & 77.06 $\pm$ 0.69 & 77.08 $\pm$ 0.69 & 5 \\
+PSG + CMTA & 0.937 $\pm$ 0.011 & 0.667 $\pm$ 0.012 & 35.89 $\pm$ 1.48 & 76.79 $\pm$ 1.15 & 76.83 $\pm$ 1.14 & 5 \\
+PSG + MMR & 0.932 $\pm$ 0.015 & 0.675 $\pm$ 0.012 & 35.39 $\pm$ 1.23 & 76.94 $\pm$ 1.12 & 76.97 $\pm$ 1.12 & 5 \\
+PSG + CMTA + MMR & 0.955 $\pm$ 0.036 & 0.664 $\pm$ 0.015 & 34.99 $\pm$ 0.91 & 76.06 $\pm$ 1.33 & 76.10 $\pm$ 1.32 & 5 \\
+\hline
+\end{tabular}
+
+
+
+% Table 6 — Joint degradation (CMU-MOSI)
+\begin{tabular}{lcccccc}
+\hline
+Condition & MAE$\downarrow$ & Corr$\uparrow$ & Acc-7$\uparrow$ & Acc-2$\uparrow$ & F1$\uparrow$ & n seeds \\
+\hline
+Clean (ref.) & 0.926 $\pm$ 0.009 & 0.671 $\pm$ 0.011 & 35.42 $\pm$ 1.10 & 77.14 $\pm$ 0.81 & 77.17 $\pm$ 0.79 & 5 \\
+A+V 30% only (ref.) & 0.955 $\pm$ 0.036 & 0.664 $\pm$ 0.015 & 34.99 $\pm$ 0.91 & 76.06 $\pm$ 1.33 & 76.10 $\pm$ 1.32 & 5 \\
+Unaligned only (ref.) & 0.914 $\pm$ 0.014 & 0.680 $\pm$ 0.007 & 36.33 $\pm$ 2.27 & 77.08 $\pm$ 0.85 & 77.11 $\pm$ 0.85 & 5 \\
+A+V 30% + unaligned, MMR & 0.941 $\pm$ 0.007 & 0.668 $\pm$ 0.005 & 36.18 $\pm$ 1.20 & 76.85 $\pm$ 0.84 & 76.91 $\pm$ 0.83 & 5 \\
+A+V 30% + unaligned, zero-fill & 0.913 $\pm$ 0.011 & 0.673 $\pm$ 0.005 & 37.14 $\pm$ 0.93 & 77.90 $\pm$ 0.93 & 77.92 $\pm$ 0.93 & 5 \\
+\hline
+\end{tabular}
+
+
+% Table 7 — Training-time dropout vs. test-time missingness (A+V)
+\begin{tabular}{lcccccc}
+\hline
+Condition & MAE$\downarrow$ & Corr$\uparrow$ & Acc-7$\uparrow$ & Acc-2$\uparrow$ & F1$\uparrow$ & n seeds \\
+\hline
+Zero-fill | p_train=0 | p_test=0 & 0.918 $\pm$ 0.023 & 0.677 $\pm$ 0.012 & 34.69 $\pm$ 1.32 & 78.08 $\pm$ 0.62 & 78.09 $\pm$ 0.58 & 5 \\
+Zero-fill | p_train=0 | p_test=0.3 & 0.934 $\pm$ 0.028 & 0.674 $\pm$ 0.010 & 33.85 $\pm$ 1.29 & 77.58 $\pm$ 1.06 & 77.62 $\pm$ 1.04 & 5 \\
+Zero-fill | p_train=0.3 | p_test=0 & 0.940 $\pm$ 0.013 & 0.668 $\pm$ 0.013 & 35.92 $\pm$ 0.96 & 76.79 $\pm$ 1.16 & 76.83 $\pm$ 1.16 & 5 \\
+Zero-fill | p_train=0.3 | p_test=0.3 & 0.937 $\pm$ 0.011 & 0.667 $\pm$ 0.012 & 35.89 $\pm$ 1.48 & 76.79 $\pm$ 1.15 & 76.83 $\pm$ 1.14 & 5 \\
+MMR | p_train=0 | p_test=0 & 0.926 $\pm$ 0.009 & 0.671 $\pm$ 0.011 & 35.42 $\pm$ 1.10 & 77.14 $\pm$ 0.81 & 77.17 $\pm$ 0.79 & 5 \\
+MMR | p_train=0 | p_test=0.3 & 0.980 $\pm$ 0.042 & 0.655 $\pm$ 0.020 & 32.86 $\pm$ 0.73 & 75.69 $\pm$ 2.08 & 75.71 $\pm$ 2.09 & 5 \\
+MMR | p_train=0.3 | p_test=0 & 0.957 $\pm$ 0.037 & 0.664 $\pm$ 0.017 & 34.66 $\pm$ 0.60 & 76.03 $\pm$ 1.26 & 76.07 $\pm$ 1.25 & 5 \\
+MMR | p_train=0.3 | p_test=0.3 & 0.955 $\pm$ 0.036 & 0.664 $\pm$ 0.015 & 34.99 $\pm$ 0.91 & 76.06 $\pm$ 1.33 & 76.10 $\pm$ 1.32 & 5 \\
+MMR-rec (λ3=0.1) | p_train=0 | p_test=0.3 & 0.934 $\pm$ 0.031 & 0.669 $\pm$ 0.013 & 35.42 $\pm$ 0.53 & 76.85 $\pm$ 1.96 & 76.89 $\pm$ 1.94 & 5 \\
+\hline
+\end{tabular}
+
+
+% Table 8 — What the MMR surrogate encodes (A+V 30% test)
+\begin{tabular}{lcccccccc}
+\hline
+Condition & cos(f̂a,fa)$\uparrow$ & cos(f̂v,fv)$\uparrow$ & MSE(f̂a,fa)$\downarrow$ & MSE(f̂v,fv)$\downarrow$ & MAE$\downarrow$ & Acc-7$\uparrow$ & Acc-2$\uparrow$ & n seeds \\
+\hline
+Zero-fill & -0.050 $\pm$ 0.094 & -0.060 $\pm$ 0.068 & 9.775 $\pm$ 1.065 & 10.465 $\pm$ 1.102 & 0.937 $\pm$ 0.011 & 35.89 $\pm$ 1.48 & 76.79 $\pm$ 1.15 & 5 \\
+Text-MLP control (always on) & -0.001 $\pm$ 0.134 & 0.032 $\pm$ 0.042 & 21.301 $\pm$ 8.729 & 21.274 $\pm$ 7.062 & 0.915 $\pm$ 0.018 & 36.38 $\pm$ 0.99 & 77.29 $\pm$ 0.98 & 5 \\
+MMR-task (λ3=0) & 0.306 $\pm$ 0.106 & 0.203 $\pm$ 0.107 & 7.249 $\pm$ 0.737 & 8.402 $\pm$ 1.405 & 0.955 $\pm$ 0.036 & 34.99 $\pm$ 0.91 & 76.06 $\pm$ 1.33 & 5 \\
+MMR-rec (λ3=0.1) & 0.968 $\pm$ 0.009 & 0.869 $\pm$ 0.019 & 0.445 $\pm$ 0.114 & 1.479 $\pm$ 0.193 & 0.945 $\pm$ 0.025 & 35.51 $\pm$ 1.47 & 77.55 $\pm$ 1.92 & 5 \\
+MMR-rec, trained clean (λ3=0.1) & 0.959 $\pm$ 0.012 & 0.826 $\pm$ 0.027 & 0.466 $\pm$ 0.084 & 2.002 $\pm$ 0.348 & 0.934 $\pm$ 0.031 & 35.42 $\pm$ 0.53 & 76.85 $\pm$ 1.96 & 5 \\
+\hline
+\end{tabular}
+
+
+% Table 9 — Partial frame loss and additive noise (switch in Eq. 4 does not fire)
+\begin{tabular}{lcccccc}
+\hline
+Condition & MAE$\downarrow$ & Corr$\uparrow$ & Acc-7$\uparrow$ & Acc-2$\uparrow$ & F1$\uparrow$ & n seeds \\
+\hline
+Clean-trained MMR @ clean & 0.926 $\pm$ 0.009 & 0.671 $\pm$ 0.011 & 35.42 $\pm$ 1.10 & 77.14 $\pm$ 0.81 & 77.17 $\pm$ 0.79 & 5 \\
+Clean-trained MMR @ frame30 & 0.926 $\pm$ 0.010 & 0.670 $\pm$ 0.012 & 35.48 $\pm$ 1.76 & 77.26 $\pm$ 0.71 & 77.29 $\pm$ 0.69 & 5 \\
+Clean-trained MMR @ frame50 & 0.933 $\pm$ 0.010 & 0.669 $\pm$ 0.011 & 35.19 $\pm$ 1.50 & 77.32 $\pm$ 0.49 & 77.35 $\pm$ 0.47 & 5 \\
+Clean-trained MMR @ noise0.5 & 0.926 $\pm$ 0.009 & 0.670 $\pm$ 0.011 & 35.19 $\pm$ 1.16 & 77.17 $\pm$ 0.82 & 77.19 $\pm$ 0.81 & 5 \\
+Clean-trained MMR @ noise1.0 & 0.930 $\pm$ 0.008 & 0.668 $\pm$ 0.012 & 35.13 $\pm$ 1.18 & 77.11 $\pm$ 0.79 & 77.14 $\pm$ 0.77 & 5 \\
+A+V30-trained MMR @ clean & 0.957 $\pm$ 0.037 & 0.664 $\pm$ 0.017 & 34.66 $\pm$ 0.60 & 76.03 $\pm$ 1.26 & 76.07 $\pm$ 1.25 & 5 \\
+A+V30-trained MMR @ frame30 & 0.959 $\pm$ 0.037 & 0.663 $\pm$ 0.017 & 34.52 $\pm$ 1.08 & 75.83 $\pm$ 1.15 & 75.87 $\pm$ 1.14 & 5 \\
+A+V30-trained MMR @ frame50 & 0.963 $\pm$ 0.036 & 0.663 $\pm$ 0.016 & 34.08 $\pm$ 1.34 & 75.86 $\pm$ 1.29 & 75.90 $\pm$ 1.28 & 5 \\
+A+V30-trained MMR @ noise0.5 & 0.958 $\pm$ 0.037 & 0.663 $\pm$ 0.017 & 35.01 $\pm$ 1.03 & 76.09 $\pm$ 1.14 & 76.14 $\pm$ 1.12 & 5 \\
+A+V30-trained MMR @ noise1.0 & 0.960 $\pm$ 0.037 & 0.661 $\pm$ 0.017 & 34.78 $\pm$ 1.16 & 76.06 $\pm$ 1.21 & 76.11 $\pm$ 1.20 & 5 \\
+A+V30-trained zero-fill @ clean & 0.940 $\pm$ 0.013 & 0.668 $\pm$ 0.013 & 35.92 $\pm$ 0.96 & 76.79 $\pm$ 1.16 & 76.83 $\pm$ 1.16 & 5 \\
+A+V30-trained zero-fill @ frame30 & 0.938 $\pm$ 0.013 & 0.668 $\pm$ 0.013 & 35.60 $\pm$ 1.28 & 77.11 $\pm$ 0.93 & 77.15 $\pm$ 0.92 & 5 \\
+A+V30-trained zero-fill @ frame50 & 0.939 $\pm$ 0.013 & 0.667 $\pm$ 0.013 & 35.48 $\pm$ 1.37 & 76.88 $\pm$ 0.98 & 76.92 $\pm$ 0.96 & 5 \\
+A+V30-trained zero-fill @ noise0.5 & 0.941 $\pm$ 0.013 & 0.668 $\pm$ 0.013 & 35.89 $\pm$ 1.08 & 76.68 $\pm$ 1.03 & 76.71 $\pm$ 1.02 & 5 \\
+A+V30-trained zero-fill @ noise1.0 & 0.941 $\pm$ 0.014 & 0.666 $\pm$ 0.013 & 35.71 $\pm$ 1.36 & 76.91 $\pm$ 0.82 & 76.94 $\pm$ 0.81 & 5 \\
+A+V30-trained MMR-rec @ clean & 0.944 $\pm$ 0.024 & 0.673 $\pm$ 0.008 & 35.25 $\pm$ 1.78 & 77.76 $\pm$ 1.86 & 77.79 $\pm$ 1.83 & 5 \\
+A+V30-trained MMR-rec @ frame30 & 0.945 $\pm$ 0.024 & 0.673 $\pm$ 0.008 & 34.99 $\pm$ 1.56 & 77.55 $\pm$ 1.86 & 77.58 $\pm$ 1.84 & 5 \\
+A+V30-trained MMR-rec @ frame50 & 0.947 $\pm$ 0.026 & 0.672 $\pm$ 0.008 & 35.01 $\pm$ 1.39 & 77.46 $\pm$ 2.03 & 77.50 $\pm$ 2.01 & 5 \\
+A+V30-trained MMR-rec @ noise0.5 & 0.945 $\pm$ 0.025 & 0.673 $\pm$ 0.008 & 35.10 $\pm$ 1.84 & 77.78 $\pm$ 1.78 & 77.82 $\pm$ 1.75 & 5 \\
+A+V30-trained MMR-rec @ noise1.0 & 0.947 $\pm$ 0.026 & 0.672 $\pm$ 0.009 & 35.25 $\pm$ 1.58 & 77.70 $\pm$ 1.64 & 77.73 $\pm$ 1.62 & 5 \\
+\hline
+\end{tabular}
+
+
+% Table 10 — CMTA on aligned vs. unaligned input, with attention entropy (1 = uniform)
+\begin{tabular}{lcccccccc}
+\hline
+Condition & MAE$\downarrow$ & Corr$\uparrow$ & Acc-7$\uparrow$ & Acc-2$\uparrow$ & F1$\uparrow$ & Attn entropy (audio) & Attn entropy (vision) & n seeds \\
+\hline
+Aligned, CMTA & 0.926 $\pm$ 0.009 & 0.671 $\pm$ 0.011 & 35.42 $\pm$ 1.10 & 77.14 $\pm$ 0.81 & 77.17 $\pm$ 0.79 & 0.636 $\pm$ 0.062 & 0.428 $\pm$ 0.071 & 5 \\
+Aligned, no CMTA (mean-pool) & 0.922 $\pm$ 0.026 & 0.681 $\pm$ 0.008 & 35.13 $\pm$ 1.92 & 78.08 $\pm$ 1.37 & 78.10 $\pm$ 1.37 & — & — & 5 \\
+Unaligned, CMTA & 0.914 $\pm$ 0.014 & 0.680 $\pm$ 0.007 & 36.33 $\pm$ 2.27 & 77.08 $\pm$ 0.85 & 77.11 $\pm$ 0.85 & 0.697 $\pm$ 0.139 & 0.528 $\pm$ 0.091 & 5 \\
+Unaligned, no CMTA (mean-pool) & 0.907 $\pm$ 0.014 & 0.681 $\pm$ 0.006 & 36.44 $\pm$ 1.67 & 78.16 $\pm$ 0.79 & 78.17 $\pm$ 0.78 & — & — & 5 \\
+\hline
+\end{tabular}
+

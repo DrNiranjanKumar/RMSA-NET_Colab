@@ -1,0 +1,19 @@
+Hyperparameter,Value
+"Input dims (text, audio, vision)","768, 5, 20"
+BiLSTM hidden H (text: per direction; audio/vision: H/2 per direction),128
+BiLSTM layers (text / audio / vision),2 / 1 / 1
+Projection dim D,64
+CMTA attention dim / heads,128 / 1
+PSG gate and polarity MLP hidden,128
+MMR surrogate generator,64 → 128 → 64
+Fusion MLP,192 → 128 → 32
+"Dropout (text LSTM, fusion)",0.3
+Modality dropout (training),"per condition, = test rate (Table 3); 0 for clean"
+Optimizer / LR / weight decay,AdamW / 1e-3 / 1e-4
+LR schedule,"cosine annealing, η_min = 0, T_max = epochs"
+Epochs / batch size / grad clip,30 / 32 / 1.0
+Loss weights λ1 (BCE) / λ2 (unimodal) / λ3 (MMR-rec),0.5 / 0.1 / 0 (0.1 for MMR-rec)
+Model selection,lowest validation MAE under the training condition
+Seeds,"7, 13, 17, 42, 99"
+Feature standardisation,audio/vision z-scored with training statistics
+Trainable parameters (full model),1.98 M

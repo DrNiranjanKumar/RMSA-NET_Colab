@@ -1,0 +1,106 @@
+{
+ "mosi": {
+  "stats": {
+   "train": {
+    "n": 1284,
+    "audio_all_zero": 0,
+    "vision_all_zero": 1,
+    "T_text": 50,
+    "text_len_mean": 14.779595015576325,
+    "text_len_source": "text_bert attention mask",
+    "T_audio": 50,
+    "T_vision": 50,
+    "d": [
+     768,
+     5,
+     20
+    ]
+   },
+   "valid": {
+    "n": 229,
+    "audio_all_zero": 0,
+    "vision_all_zero": 0,
+    "T_text": 50,
+    "text_len_mean": 14.017467248908297,
+    "text_len_source": "text_bert attention mask",
+    "T_audio": 50,
+    "T_vision": 50,
+    "d": [
+     768,
+     5,
+     20
+    ]
+   },
+   "test": {
+    "n": 686,
+    "audio_all_zero": 0,
+    "vision_all_zero": 1,
+    "T_text": 50,
+    "text_len_mean": 16.495626822157433,
+    "text_len_source": "text_bert attention mask",
+    "T_audio": 50,
+    "T_vision": 50,
+    "d": [
+     768,
+     5,
+     20
+    ]
+   }
+  },
+  "const_mean_mae": 1.4644019603729248,
+  "const_zero_mae": 1.417371153831482,
+  "train_label_mean": 0.2344885915517807
+ },
+ "mosi_unal": {
+  "stats": {
+   "train": {
+    "n": 1284,
+    "audio_all_zero": 0,
+    "vision_all_zero": 1,
+    "T_text": 50,
+    "text_len_mean": 14.779595015576325,
+    "text_len_source": "text_bert attention mask",
+    "T_audio": 375,
+    "T_vision": 500,
+    "d": [
+     768,
+     5,
+     20
+    ]
+   },
+   "valid": {
+    "n": 229,
+    "audio_all_zero": 0,
+    "vision_all_zero": 0,
+    "T_text": 50,
+    "text_len_mean": 14.017467248908297,
+    "text_len_source": "text_bert attention mask",
+    "T_audio": 375,
+    "T_vision": 500,
+    "d": [
+     768,
+     5,
+     20
+    ]
+   },
+   "test": {
+    "n": 686,
+    "audio_all_zero": 0,
+    "vision_all_zero": 1,
+    "T_text": 50,
+    "text_len_mean": 16.495626822157433,
+    "text_len_source": "text_bert attention mask",
+    "T_audio": 375,
+    "T_vision": 500,
+    "d": [
+     768,
+     5,
+     20
+    ]
+   }
+  },
+  "const_mean_mae": 1.4644019603729248,
+  "const_zero_mae": 1.417371153831482,
+  "train_label_mean": 0.2344885915517807
+ }
+}

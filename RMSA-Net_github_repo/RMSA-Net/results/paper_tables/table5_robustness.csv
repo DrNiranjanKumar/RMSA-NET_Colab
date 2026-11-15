@@ -1,0 +1,16 @@
+Variant,Test condition,mae,corr,acc7,acc2
+Zero-fill,Complete,0.918 ± 0.023,0.677 ± 0.012,34.69 ± 1.32,78.08 ± 0.62
+Zero-fill,Audio 30%,0.925 ± 0.024,0.676 ± 0.012,34.17 ± 1.06,77.73 ± 0.38
+Zero-fill,Vision 30%,0.926 ± 0.026,0.674 ± 0.010,34.11 ± 1.52,77.87 ± 1.19
+Zero-fill,A+V 30%,0.934 ± 0.028,0.674 ± 0.010,33.85 ± 1.29,77.58 ± 1.06
+Zero-fill,A+V 50%,0.949 ± 0.031,0.673 ± 0.012,32.97 ± 1.65,77.29 ± 1.32
+MMR-task (no reconstruction loss),Complete,0.926 ± 0.009,0.671 ± 0.011,35.42 ± 1.10,77.14 ± 0.81
+MMR-task (no reconstruction loss),Audio 30%,0.930 ± 0.009,0.670 ± 0.012,34.72 ± 0.90,77.03 ± 0.86
+MMR-task (no reconstruction loss),Vision 30%,0.973 ± 0.039,0.657 ± 0.018,33.47 ± 0.95,75.95 ± 1.77
+MMR-task (no reconstruction loss),A+V 30%,0.980 ± 0.042,0.655 ± 0.020,32.86 ± 0.73,75.69 ± 2.08
+MMR-task (no reconstruction loss),A+V 50%,1.017 ± 0.068,0.650 ± 0.026,30.79 ± 1.73,74.90 ± 2.90
+"MMR-rec (feature matching, ours)",Complete,0.934 ± 0.030,0.671 ± 0.013,35.10 ± 0.52,77.00 ± 1.84
+"MMR-rec (feature matching, ours)",Audio 30%,0.934 ± 0.031,0.670 ± 0.013,35.10 ± 0.50,76.97 ± 1.89
+"MMR-rec (feature matching, ours)",Vision 30%,0.934 ± 0.031,0.669 ± 0.013,35.48 ± 0.59,76.88 ± 1.98
+"MMR-rec (feature matching, ours)",A+V 30%,0.934 ± 0.031,0.669 ± 0.013,35.42 ± 0.53,76.85 ± 1.96
+"MMR-rec (feature matching, ours)",A+V 50%,0.935 ± 0.032,0.668 ± 0.014,35.39 ± 0.57,76.62 ± 2.01

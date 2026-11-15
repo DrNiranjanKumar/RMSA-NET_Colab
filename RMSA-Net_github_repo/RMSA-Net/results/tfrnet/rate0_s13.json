@@ -1,0 +1,1 @@
+{"model": "tfr_net", "rate": 0.0, "seed": 13, "train_sec": 0.0, "mae": 0.7997, "corr": 0.7646, "acc7": 42.42, "acc2": 80.9, "f1": 80.87, "acc2_nz": 82.77, "f1_nz": 82.81}
